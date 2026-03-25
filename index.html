@@ -240,6 +240,73 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;color:var(--text);min-
 .cdot{width:16px;height:16px;border-radius:50%;cursor:pointer;flex-shrink:0;}
 .dls{background:none;border:none;cursor:pointer;color:var(--text3);font-size:17px;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* ── MOBILE RESPONSIVE ── */
+@media(max-width:768px){
+  .topbar{padding:0 1rem;min-height:60px;}
+  .brand-sub{display:none;}
+  .brand-title{font-size:18px;}
+  .header-controls{gap:5px;}
+  .period-lbl{font-size:13px;min-width:80px;}
+  .nb{width:28px;height:28px;font-size:13px;}
+  .vs-btn{padding:5px 10px;font-size:12px;}
+  .act-btn,.ghost-btn{padding:5px 10px;font-size:12px;}
+
+  .body-row{flex-direction:column;padding:0 0.75rem 3rem;}
+  .main-col{padding-right:0;}
+  .letter-col{width:100%;padding-top:0;margin-top:12px;}
+
+  /* notice card mobile */
+  .notice-card{position:static;margin-top:0;}
+
+  /* staff chips */
+  .staff-section{padding:10px 0 4px;}
+  .schip{padding:4px 10px;font-size:12px;}
+
+  /* month calendar */
+  .cal-dow span{padding:8px 1px;font-size:10px;letter-spacing:0;}
+  .cal-cell{min-height:72px;padding:5px 3px 3px;gap:2px;}
+  .dn{font-size:11px;}
+  .mev{font-size:9px;}
+  .mev-dot{width:5px;height:5px;margin-right:3px;}
+  .mev-time{font-size:9px;}
+  .memo-row{font-size:9px;}
+  .memo-star{font-size:9px;margin-right:2px;}
+
+  /* bulk view — horizontal scroll per week */
+  .bulk-hint{font-size:12px;padding:8px 12px;}
+  .week-block{border-radius:10px;}
+  .week-tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .week-tbl{min-width:480px;}
+  .sth2{min-width:52px !important;font-size:12px !important;padding:7px 8px !important;}
+  .day-col-hd .dch-n{font-size:12px;}
+  .day-col-hd .dch-d{font-size:10px;}
+  .bci{font-size:10px;min-height:32px;}
+
+  /* stats */
+  .stats-body{gap:6px;padding:10px 12px;}
+  .stat-tile{min-width:60px;padding:10px 6px;}
+  .st-name{font-size:11px;}
+  .st-val{font-size:17px;}
+
+  /* modals */
+  .modal-box{width:95vw !important;padding:1.2rem;}
+  .modal-box h3{font-size:15px;}
+  .pm{width:95vw !important;}
+  .ps-row{flex-wrap:wrap;gap:6px;}
+  .ps-dows{flex-wrap:wrap;}
+  .ps-dw{width:28px;height:28px;}
+  .ps-tm{margin-left:0;width:100%;}
+  .grid2{grid-template-columns:1fr 1fr;gap:8px;}
+  .mf input,.mf select{font-size:16px;} /* prevent zoom on iOS */
+}
+
+@media(max-width:400px){
+  .cal-cell{min-height:60px;padding:4px 2px 2px;}
+  .dn{font-size:10px;}
+  .mev,.memo-row{font-size:8.5px;}
+  .mev-time{display:none;}
+}
 </style>
 </head>
 <body>
@@ -451,7 +518,6 @@ function renderMonth(){
     const isSat=dow===6,isSun=dow===0;
     const memo=ds&&memos[ds]?memos[ds].trim():'';
     const devs=ds?events.filter(e=>e.date===ds&&!hidden.has(e.staffId)):[];
-    // 시작 시간 기준 정렬
     const sod=[...new Set(devs.slice().sort((a,b)=>a.startSlot-b.startSlot).map(e=>e.staffId))];
     html+=`<div class="cal-cell${!inM?' dim':''}${isT?' is-today':''}${isPast?' past':''}" data-date="${ds}">`;
     html+=`<div class="dn-wrap"><span class="dn${isSat?' sat':isSun?' sun':''}">${inM?dn:''}</span></div>`;
@@ -489,7 +555,7 @@ function renderBulk(){
   weeks.forEach((wk,wi)=>{
     const s=wk[0],e=wk[wk.length-1];
     html+=`<div class="week-block"><div class="week-hd"><span>${wi+1}주차</span><span class="week-hd-range">${curM+1}/${s.d} – ${curM+1}/${e.d}</span></div>`;
-    html+=`<table class="week-tbl"><thead><tr><th class="sth2">직원</th>`;
+    html+=`<div class="week-tbl-wrap"><table class="week-tbl"><thead><tr><th class="sth2">직원</th>`;
     wk.forEach(({d,ds,dow})=>{
       const isSat=dow===6,isSun=dow===0,isT=ds===today;
       html+=`<th class="day-col-hd${isSat?' sat':isSun?' sun':''}" style="${isT?'background:#EDF2F9;':''}"><div class="dch-n" style="${isT?'background:var(--navy);color:#fff;border-radius:4px;padding:0 5px;display:inline-block':''}">${d}</div><div class="dch-d">${DOWS[dow]}</div></th>`;
@@ -509,7 +575,7 @@ function renderBulk(){
     wk.forEach(({ds})=>{
       html+=`<td class="memo-row-bulk"><textarea class="memo-inp" data-date="${ds}" placeholder="이슈...">${memos[ds]||''}</textarea></td>`;
     });
-    html+=`</tr></tbody></table></div>`;
+    html+=`</tr></tbody></table></div></div>`;
   });
   html+=statsHTML();
   document.getElementById('mainView').innerHTML=html;
