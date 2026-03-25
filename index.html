@@ -285,27 +285,28 @@ const HS=9.5,HE=22,SLOTS=(HE-HS)*2;
 const MIN_Y=2026,MIN_M=2;
 const DOWS=['일','월','화','수','목','금','토'];
 
-const BIN_ID='69c38b87b7ec241ddc9ee574';
-const BIN_KEY='$2a$10$QTiVmXUNJCHzXr2DaW.NgOkd/r9hdscS6lSxZIYO7k1Er.IsDnJZK';
-const BIN_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const GIST_ID='02c60fae0baad6fe9946833e867c4d40';
+const GIST_TOKEN='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';
+const GIST_FILE='kangol_data.json';
 
-// ── JSONBin API ──
+// ── Gist API ──
 async function gistLoad(){
   try{
-    const r=await fetch(BIN_URL,{headers:{'X-Master-Key':BIN_KEY}});
+    const r=await fetch(`https://api.github.com/gists/${GIST_ID}`,{headers:{'Authorization':`token ${GIST_TOKEN}`,'Accept':'application/vnd.github.v3+json'}});
     const d=await r.json();
-    if(d.record) return d.record;
-  }catch(e){console.error('Load error',e);}
+    const content=d.files[GIST_FILE]?.content;
+    if(content) return JSON.parse(content);
+  }catch(e){console.error('Gist load error',e);}
   return null;
 }
 async function gistSave(data){
   try{
-    await fetch(BIN_URL,{
-      method:'PUT',
-      headers:{'X-Master-Key':BIN_KEY,'Content-Type':'application/json'},
-      body:JSON.stringify(data)
+    await fetch(`https://api.github.com/gists/${GIST_ID}`,{
+      method:'PATCH',
+      headers:{'Authorization':`token ${GIST_TOKEN}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body:JSON.stringify({files:{[GIST_FILE]:{content:JSON.stringify(data,null,2)}}})
     });
-  }catch(e){console.error('Save error',e);}
+  }catch(e){console.error('Gist save error',e);}
 }
 
 // ── Local cache (fallback + speed) ──
@@ -451,7 +452,10 @@ function renderMonth(){
     const isSat=dow===6,isSun=dow===0;
     const memo=ds&&memos[ds]?memos[ds].trim():'';
     const devs=ds?events.filter(e=>e.date===ds&&!hidden.has(e.staffId)):[];
-    const sod=[...new Set(devs.map(e=>e.staffId))];
+    // 시작 시간 기준으로 정렬 (일찍 나오는 사람 먼저)
+    const sod=[...new Set(
+      devs.slice().sort((a,b)=>a.startSlot-b.startSlot).map(e=>e.staffId)
+    )];
     html+=`<div class="cal-cell${!inM?' dim':''}${isT?' is-today':''}${isPast?' past':''}" data-date="${ds}">`;
     html+=`<div class="dn-wrap"><span class="dn${isSat?' sat':isSun?' sun':''}">${inM?dn:''}</span></div>`;
     if(memo){
