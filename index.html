@@ -84,6 +84,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;color:var(--text);min-
 .mev-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-right:5px;}
 .mev-name{font-weight:700;margin-right:4px;}
 .mev-time{font-weight:400;color:var(--text3);font-size:10.5px;}
+.mev-time-short{display:none;}
 
 /* memo row — ★ red, gray bg highlight */
 .memo-row{
@@ -528,7 +529,8 @@ function renderMonth(){
       const s=staff.find(x=>x.id===sid);if(!s)return;
       const c=COLORS[s.color%COLORS.length];
       const ti=devs.filter(e=>e.staffId===sid).map(e=>s2t(e.startSlot)+'–'+s2t(e.endSlot)).join(' ');
-      html+=`<div class="mev" data-date="${ds}"><span class="mev-dot" style="background:${c.border}"></span><span class="mev-name" style="color:${c.text}">${s.name}</span><span class="mev-time">${ti}</span></div>`;
+      const tiShort=devs.filter(e=>e.staffId===sid).map(e=>{const sh=t=>s2t(t).replace(':00','').replace(':30','.5');return sh(e.startSlot)+'–'+sh(e.endSlot);}).join(' ');
+      html+=`<div class="mev" data-date="${ds}"><span class="mev-dot" style="background:${c.border}"></span><span class="mev-name" style="color:${c.text}">${s.name}</span><span class="mev-time mev-time-full">${ti}</span><span class="mev-time mev-time-short">${tiShort}</span></div>`;
     });
     html+=`</div>`;
   }
