@@ -266,14 +266,14 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;color:var(--text);min-
 
   /* month calendar */
   .cal-dow span{padding:8px 1px;font-size:10px;letter-spacing:0;}
-  .cal-cell{min-height:90px;padding:5px 2px 3px;gap:1px;overflow:visible;}
+  .cal-cell{height:88px;min-height:88px;max-height:88px;padding:5px 2px 3px;gap:1px;overflow:hidden;}
   .dn{font-size:11px;}
-  .mev{font-size:8px;white-space:nowrap;overflow:visible;line-height:1.4;}
+  .mev{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:clip;line-height:1.45;flex-shrink:0;}
   .mev-dot{width:5px;height:5px;margin-right:2px;flex-shrink:0;}
   .mev-name{display:none !important;}
   .mev-time-full{display:none !important;}
-  .mev-time-short{display:inline !important;font-size:7.5px;}
-  .memo-row{font-size:8px;white-space:nowrap;overflow:visible;}
+  .mev-time-short{display:inline !important;font-size:8px;}
+  .memo-row{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .memo-star{font-size:8px;margin-right:2px;}
 
   /* bulk view — horizontal scroll per week */
@@ -305,10 +305,10 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;color:var(--text);min-
 }
 
 @media(max-width:400px){
-  .cal-cell{min-height:75px;padding:4px 2px 2px;}
+  .cal-cell{height:80px;min-height:80px;max-height:80px;}
   .dn{font-size:10px;}
   .mev{font-size:7.5px;}
-  .mev-time-short{font-size:7px !important;}
+  .mev-time-short{font-size:7.5px !important;}
   .memo-row{font-size:7.5px;}
 }
 </style>
